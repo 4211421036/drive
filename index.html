@@ -369,10 +369,51 @@
             font-weight: bold;
             color: #333;
         }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #upload {
+            background: #1DB954;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        #upload:hover {
+            background: #1aa34a;
+        }
     </style>
 </head>
 
-<body>
+<body onload="showSplashScreen()">
+
+    <div id="splash-screen"
+        style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; display: flex; align-items: center; justify-content: center; z-index: 10000;">
+        <img src="https://4211421036.github.io/g4lihru/987654567.png" alt="Logo" style="height: 100px;">
+    </div>
+
+    <script>
+        function showSplashScreen() {
+            const splashScreen = document.getElementById('splash-screen');
+            setTimeout(() => {
+                splashScreen.style.display = 'none';
+            }, 3000); // Adjust the timeout as needed
+        }
+    </script>
+    <div class="header">
+        <a href="https://4211421036.github.io/">
+            <img src="https://4211421036.github.io/g4lihru/987654567.png" alt="Logo"
+                style="height: 40px; vertical-align: middle; border-radius: 50%;">
+        </a>
+        <button id="upload" onclick="window.location.href='https://4211421036/drive/upload';">Upload PDF</button>
+    </div>
     <div id="content">
         <div id="pdf-list"></div>
     </div>
