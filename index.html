@@ -4,10 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Modern Book Viewer - View and interact with PDF files seamlessly.">
+    <meta name="keywords" content="PDF, Book Viewer, Modern, Interactive, PDF.js, Online Viewer">
+    <meta name="author" content="GALIH RIDHO UTOMO">
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    <meta name="bingbot" content="index, follow">
     <title>Modern Book Viewer</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         /* Desktop Styles */
@@ -374,11 +379,17 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: fixed;
+            width: -webkit-fill-available;
+            background: white;
+            align-items: center;
+            height: 50px;
+            top: 0;
         }
 
         #upload {
             background: #1DB954;
-            color: white;
+            color: #151515;
             border: none;
             padding: 10px 20px;
             border-radius: 5px;
