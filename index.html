@@ -15,563 +15,442 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Desktop Styles */
-        @media (min-width: 768px) {
-            #modal-toolbar {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                background: #333;
-                display: flex;
-                justify-content: center;
-                gap: 10px;
-                z-index: 1000;
-            }
-
-            #page-controls {
-                width: -webkit-fill-available;
-            }
-
-            .mobile-toolbar-header {
-                display: none;
-            }
-
-            .bookk {
-                width: 100%;
-                height: 100%;
-                background: rgba(62, 62, 62, 1);
-            }
-
-            #book-container {
-                margin-top: 60px;
-                width: 400px !important;
-                height: 550px !important;
-                overflow: hidden !important;
-                /* overflow-y: auto; */
-                padding: 20px 0;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                background: rgba(62, 62, 62, 1);
-                transform: translate(-50%, 0px);
-                left: 50% !important;
-                position: relative;
-                /* Adjusted for toolbar height */
-            }
-
-            .mobile-toolbar {
-                display: none;
-            }
-        }
-
-        /* Mobile Styles */
-        @media (max-width: 767px) {
-            #modal-toolbar {
-                display: none;
-            }
-
-            #page-info-mobile {
-                display: flex;
-                justify-content: space-evenly;
-                width: 100%;
-            }
-
-            .mobile-toolbar {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                background: #333;
-                color: white;
-                z-index: 1000;
-                transition: transform 0.3s ease;
-                border-top-left-radius: 20px;
-                border-top-right-radius: 20px;
-                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
-            }
-
-            .mobile-toolbar-handle {
-                width: 40px;
-                height: 4px;
-                background: rgba(255, 255, 255, 0.5);
-                border-radius: 2px;
-                margin: 10px auto;
-            }
-
-            .mobile-toolbar-content {
-                padding: 20px;
-                display: flex;
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .mobile-toolbar.collapsed {
-                transform: translateY(calc(100% - 20px));
-                /* Adjusted for handle height */
-            }
-
-            .mobile-toolbar.expanded {
-                transform: translateY(0);
-            }
-
-            .toolbar-button-gruop {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                grid-template-rows: repeat(2, 1fr);
-                gap: 10px;
-            }
-
-            .mobile-toolbar-header {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 10px;
-                background: #262626;
-                color: white;
-                z-index: 99999;
-                position: relative;
-            }
-
-            .pdf-title {
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-
-            .toolbar-button-back {
-                background: none;
-                border: none;
-                color: white;
-                cursor: pointer;
-                font-size: 14px;
-                border-radius: 5px;
-                transition: all 0.3s ease;
-                width: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: flex-start;
-                gap: 10px;
-                width: max-content;
-            }
-
-            canvas {
-                max-width: 100%;
-                height: auto;
-                margin-bottom: 50% !important;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-                border-radius: 5px;
-                transition: transform 0.5s ease;
-                top: 50% !important;
-                position: relative !important;
-            }
-        }
-
-        /* Common Styles */
-        .toolbar-button {
-            background: none;
-            border: 1px solid #6c6c6c;
+        /* General Styles */
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #0d1117;
             color: white;
-            cursor: pointer;
-            font-size: 14px;
-            border-radius: 5px;
-            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .container {
+            display: flex;
             width: 100%;
+            height: 100vh;
+            gap: 10px;
+            padding: 10px;
+        }
+
+        /* Main Content Layout */
+        .left-section {
+            flex: 2;
+            /* Take 2/3 of the space */
             display: flex;
-            align-items: center;
-            justify-content: center;
+            flex-direction: column;
             gap: 10px;
         }
 
-        .toolbar-button:hover {
-            background: #1DB954;
-        }
-
-        #page-controls {
+        .right-section {
+            flex: 1;
+            /* Take 1/3 of the space */
             display: flex;
-            align-items: center;
+            flex-direction: column;
             gap: 10px;
-            justify-content: center;
         }
 
-        #page-info {
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
+        /* Section 1: Hero Carousel */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border-radius: 10px;
+            background: #1e2430;
         }
 
-        #page-input {
-            width: 60px;
-            padding: 8px;
-            text-align: center;
-            border-radius: 5px;
-            border: 2px solid #1DB954;
-            background: #222;
-            color: white;
-            font-size: 16px;
-        }
-
-        #modal {
+        .carousel-slide {
             display: none;
-            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .carousel-slide.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .carousel-thumbnail {
+            flex: 1;
+            background: #eee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .carousel-thumbnail canvas {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .carousel-thumbnail .loading {
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 9998;
-            overflow: hidden;
-        }
-
-        #book-container {
-            width: 100%;
-            height: 100%;
-            overflow-y: auto;
-            padding: 20px 0;
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
-            background: rgba(62, 62, 62, 0.9);
-            /* Added semi-transparent background */
-        }
-
-        canvas {
-            max-width: 100%;
-            height: auto;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            border-radius: 5px;
-            transition: transform 0.5s ease;
-        }
-
-        .page-curl {
-            transform: rotateY(-15deg);
-        }
-
-        #next-book-button {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            background: #1DB954;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.5);
             color: white;
-            border: none;
+            font-size: 16px;
+        }
+
+        .carousel-thumbnail .pdf-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
             display: flex;
-            align-items: center;
             justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-            z-index: 9999;
+            align-items: center;
+            font-size: 20px;
         }
 
-        /* PDF List Styles */
-        #content {
-            padding: 20px;
-        }
-
-        #pdf-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-            padding: 20px;
-        }
-
-        .pdf-card {
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s;
-        }
-
-        .pdf-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .pdf-thumbnail {
-            height: 200px;
-            background: #eee;
-        }
-
-        .pdf-title {
-            padding: 10px;
+        .carousel-title {
+            padding: 15px;
             text-align: center;
             font-weight: bold;
+            color: black;
+            background: white;
+        }
+
+        /* Carousel Navigation */
+        .carousel-nav {
+            position: absolute;
+            bottom: 70px;
+            /* Positioned above the title */
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px;
+        }
+
+        .carousel-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .carousel-dot.active {
+            background: white;
+        }
+
+        .carousel-prev,
+        .carousel-next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 20px;
+            z-index: 1;
+            transition: background 0.3s;
+        }
+
+        .carousel-prev:hover,
+        .carousel-next:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .carousel-prev {
+            left: 10px;
+        }
+
+        .carousel-next {
+            right: 10px;
+        }
+
+        /* Section 2: Random PDFs (2 PDF) */
+        .random-section {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .random-item {
+            background: #1e2430;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.2s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .random-item:hover {
+            transform: scale(1.05);
+        }
+
+        .random-item canvas {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .random-item .pdf-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+        }
+
+        .random-item .pdf-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 12px;
+            text-align: center;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        #next-book-button {
-            display: none;
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: #1DB954;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            z-index: 10000;
-            transition: all 0.3s ease;
-        }
-
-        #next-book-button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
-        }
-
-        #next-book-button i {
-            font-size: 24px;
-        }
-
-        #next-book-tooltip {
-            display: none;
-            position: fixed;
-            bottom: 100px;
-            right: 30px;
-            background: white;
-            padding: 10px 15px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            font-size: 14px;
-            max-width: 200px;
-            z-index: 10000;
-        }
-
-        #next-book-tooltip::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            right: 25px;
-            border-width: 10px 10px 0;
-            border-style: solid;
-            border-color: white transparent transparent;
-        }
-
-        .book-preview {
+        /* Section 3: Featured PDF */
+        .featured-section {
+            flex: 1;
+            background: #1e2430;
+            border-radius: 10px;
+            overflow: hidden;
             display: flex;
+            justify-content: center;
             align-items: center;
-            gap: 10px;
-            margin-top: 5px;
+            transition: transform 0.2s;
+            cursor: pointer;
+            position: relative;
         }
 
-        .book-preview-thumbnail {
+        .featured-section:hover {
+            transform: scale(1.05);
+        }
+
+        .featured-section canvas {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .featured-section .pdf-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
             width: 40px;
             height: 40px;
-            background: #eee;
-            border-radius: 4px;
-        }
-
-        .book-preview-title {
-            font-weight: bold;
-            color: #333;
-        }
-
-        .header {
+            border-radius: 50%;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            position: fixed;
-            width: -webkit-fill-available;
-            background: white;
-            align-items: center;
-            height: 50px;
-            top: 0;
+            font-size: 20px;
         }
 
-        #upload {
-            background: #1DB954;
-            color: #151515;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s ease;
+        .featured-section .pdf-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 16px;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        #upload:hover {
-            background: #1aa34a;
+        /* Section Title */
+        .section-title {
+            margin: 0 0 5px 0;
+            font-size: 1.5rem;
+        }
+
+        /* Fallback thumbnail */
+        .fallback-thumbnail {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #eee;
+            color: #e74c3c;
+            font-size: 48px;
+        }
+
+        .pdf-carousel {
+            height: -webkit-fill-available;
         }
     </style>
 </head>
 
-<body onload="showSplashScreen()">
-
-    <div id="splash-screen"
-        style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; display: flex; align-items: center; justify-content: center; z-index: 10000;">
-        <img src="https://4211421036.github.io/g4lihru/987654567.png" alt="Logo" style="height: 100px;">
-    </div>
-
-    <script>
-        function showSplashScreen() {
-            const splashScreen = document.getElementById('splash-screen');
-            setTimeout(() => {
-                splashScreen.style.display = 'none';
-            }, 3000); // Adjust the timeout as needed
-        }
-    </script>
-    <div class="header">
-        <a href="https://4211421036.github.io/">
-            <img src="https://4211421036.github.io/g4lihru/987654567.png" alt="Logo"
-                style="height: 40px; vertical-align: middle; border-radius: 50%;">
-        </a>
-        <button id="upload" onclick="window.location.href='https://4211421036.github.io/drive/upload/';">Upload PDF</button>
-    </div>
-    <div id="content">
-        <div id="pdf-list"></div>
-    </div>
-
-    <div id="modal">
-        <!-- Desktop Toolbar -->
-        <div id="modal-toolbar">
-            <button class="toolbar-button" id="prev-page">
-                <i class="fas fa-chevron-left"></i> Previous
-            </button>
-            <div id="page-controls">
-                <span id="page-info">Page <input type="number" id="page-input" value="1" min="1"> of <span
-                        id="page-count">0</span></span>
-            </div>
-            <button class="toolbar-button" id="next-page">
-                <i class="fas fa-chevron-right"></i> Next
-            </button>
-            <button class="toolbar-button" id="zoom-in">
-                <i class="fas fa-search-plus"></i> Zoom In
-            </button>
-            <button class="toolbar-button" id="zoom-out">
-                <i class="fas fa-search-minus"></i> Zoom Out
-            </button>
-            <button class="toolbar-button" id="close-modal">
-                <i class="fas fa-times"></i> Close
-            </button>
-        </div>
-
-        <!-- Mobile Toolbar -->
-        <div class="mobile-toolbar-header">
-            <button class="toolbar-button-back" id="close-modal-mobile">
-                <i class=" fas fa-arrow-left"></i> Back
-            </button>
-            <div class="toolbar-title pdf-title" id="pdf-title"></div>
-        </div>
-        <div class="mobile-toolbar collapsed">
-            <div class="mobile-toolbar-handle"></div>
-            <div class="mobile-toolbar-content">
-                <!-- Mobile Toolbar with Back Button and Title -->
-                <div id="page-controls-mobile">
-                    <span id="page-info-mobile">Page <input type="number" id="page-input-mobile" value="1" min="1"> of
-                        <span id="page-count-mobile">0</span></span>
-                </div>
-                <div class="toolbar-button-gruop">
-                    <button class="toolbar-button" id="prev-page-mobile">
-                        <i class="fas fa-chevron-left"></i> Previous Page
-                    </button>
-                    <button class="toolbar-button" id="next-page-mobile">
-                        <i class="fas fa-chevron-right"></i> Next Page
-                    </button>
-                    <button class="toolbar-button" id="zoom-in-mobile">
-                        <i class="fas fa-search-plus"></i> Zoom In
-                    </button>
-                    <button class="toolbar-button" id="zoom-out-mobile">
-                        <i class="fas fa-search-minus"></i> Zoom Out
-                    </button>
-                </div>
-                <button class="toolbar-button" id="close-modal-mobile">
-                    <i class="fas fa-times"></i> Close
-                </button>
+<body>
+    <div class="container">
+        <!-- Left Section with Carousel -->
+        <div class="left-section">
+            <div class="carousel-container">
+                <div class="pdf-carousel" id="pdf-carousel"></div>
+                <div class="carousel-nav" id="carousel-dots"></div>
+                <div class="carousel-prev"><i class="fas fa-chevron-left"></i></div>
+                <div class="carousel-next"><i class="fas fa-chevron-right"></i></div>
             </div>
         </div>
-        <div class="bookk">
-            <div id="book-container"></div>
+
+        <!-- Right Section with Random and Featured PDFs -->
+        <div class="right-section">
+            <!-- Section 2: Random PDFs (2 PDF) -->
+            <div class="random-section" id="random-pdfs"></div>
+
+            <!-- Section 3: Featured PDF (1 PDF Acak) -->
+            <div class="featured-section" id="featured-pdf"></div>
         </div>
     </div>
-
-    <button id="next-book-button" style="display: none;">
-        <i class="fas fa-book"></i>
-    </button>
 
     <script>
         const API_URL = 'https://api.github.com/repos/4211421036/drive/contents/file';
-        let pdfInstance = null;
-        let currentPage = 1;
-        let currentScale = 1;
         let pdfFiles = [];
-        let currentPdfIndex = -1;
+        let currentSlide = 0;
 
-        // Mobile toolbar handling
-        const mobileToolbar = document.querySelector('.mobile-toolbar');
-        const mobileToolbarContent = document.querySelector('.mobile-toolbar-content');
-        let isDragging = false;
-        let startY = 0;
-        let toolbarHeight = 0;
+        // Initialize PDF.js worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-        // Set initial state
-        function initializeMobileToolbar() {
-            if (window.innerWidth <= 767) {
-                mobileToolbar.classList.add('collapsed');
-                mobileToolbarContent.style.display = 'none';
-                document.getElementById('page-controls-mobile').style.display = 'block';
-                document.getElementById('modal-toolbar').style.display = 'none';
-                document.getElementById('prev-page-canvas').style.display = 'block';
-                document.getElementById('next-page-canvas').style.display = 'block';
-            } else {
-                mobileToolbar.style.display = 'none';
-                document.getElementById('modal-toolbar').style.display = 'flex';
-                document.getElementById('prev-page-canvas').style.display = 'none';
-                document.getElementById('next-page-canvas').style.display = 'none';
+        // Fungsi untuk memilih PDF secara acak
+        function getRandomPDFs(pdfFiles, count) {
+            const shuffled = [...pdfFiles].sort(() => 0.5 - Math.random()); // Acak urutan PDF
+            return shuffled.slice(0, count); // Ambil sejumlah PDF yang diminta
+        }
+
+        // Fungsi untuk memuat thumbnail PDF
+        async function loadPDFThumbnail(pdfUrl, canvasElement) {
+            try {
+                // Show loading status
+                const loadingElement = canvasElement.parentElement.querySelector('.loading');
+                if (loadingElement) {
+                    loadingElement.style.display = 'flex';
+                }
+
+                // Load PDF document
+                const loadingTask = pdfjsLib.getDocument(pdfUrl);
+                const pdf = await loadingTask.promise;
+                const page = await pdf.getPage(1); // Get first page
+
+                // Set canvas dimensions
+                const viewport = page.getViewport({ scale: 1.0 });
+                const container = canvasElement.parentElement;
+                const containerWidth = container.clientWidth;
+                const containerHeight = container.clientHeight;
+
+                // Calculate scale to fit the container
+                const scale = Math.min(
+                    containerWidth / viewport.width,
+                    containerHeight / viewport.height
+                );
+
+                const scaledViewport = page.getViewport({ scale });
+                canvasElement.width = scaledViewport.width;
+                canvasElement.height = scaledViewport.height;
+
+                // Render the page
+                const renderContext = {
+                    canvasContext: canvasElement.getContext('2d'),
+                    viewport: scaledViewport
+                };
+
+                await page.render(renderContext).promise;
+
+                // Hide loading indicator
+                if (loadingElement) {
+                    loadingElement.style.display = 'none';
+                }
+
+                return true; // Thumbnail loaded successfully
+            } catch (error) {
+                console.error('Error loading PDF thumbnail:', error);
+
+                // Show fallback icon if rendering fails
+                const fallback = document.createElement('div');
+                fallback.className = 'fallback-thumbnail';
+                fallback.innerHTML = '<i class="fas fa-file-pdf"></i>';
+                canvasElement.parentElement.appendChild(fallback);
+                canvasElement.style.display = 'none';
+
+                // Hide loading indicator
+                const loadingElement = canvasElement.parentElement.querySelector('.loading');
+                if (loadingElement) {
+                    loadingElement.style.display = 'none';
+                }
+
+                return false; // Thumbnail failed to load
             }
         }
 
-        mobileToolbar.addEventListener('touchstart', (e) => {
-            isDragging = true;
-            startY = e.touches[0].clientY;
-            toolbarHeight = mobileToolbar.offsetHeight;
-        });
+        // Queue system for loading thumbnails to prevent too many concurrent requests
+        const thumbnailLoadQueue = [];
+        let isProcessingQueue = false;
 
-        mobileToolbar.addEventListener('touchmove', (e) => {
-            if (!isDragging) return;
+        function queueThumbnailLoad(pdfUrl, canvasElement) {
+            thumbnailLoadQueue.push({ url: pdfUrl, element: canvasElement });
+            if (!isProcessingQueue) {
+                processQueue();
+            }
+        }
 
-            const deltaY = startY - e.touches[0].clientY;
-            const threshold = 50; // Adjust this value to change sensitivity
+        async function processQueue() {
+            isProcessingQueue = true;
 
-            if (deltaY > threshold && mobileToolbar.classList.contains('collapsed')) {
-                mobileToolbar.classList.remove('collapsed');
-                mobileToolbar.classList.add('expanded');
-                mobileToolbarContent.style.display = 'flex';
-            } else if (deltaY < -threshold && mobileToolbar.classList.contains('expanded')) {
-                mobileToolbar.classList.remove('expanded');
-                mobileToolbar.classList.add('collapsed');
-                mobileToolbarContent.style.display = 'none';
+            while (thumbnailLoadQueue.length > 0) {
+                const item = thumbnailLoadQueue.shift();
+                await loadPDFThumbnail(item.url, item.element);
+
+                // Small delay to not overwhelm the browser
+                await new Promise(resolve => setTimeout(resolve, 50));
             }
 
-            // Apply transform based on swipe
-            const transformValue = Math.min(Math.max(deltaY / toolbarHeight, -1), 1);
-            mobileToolbar.style.transform = `translateY(${transformValue * 100}%)`;
-        });
-
-        mobileToolbar.addEventListener('touchend', () => {
-            isDragging = false;
-            mobileToolbar.style.transform = '';
-        });
-
-        // Handle toolbar handle clicks
-        document.querySelector('.mobile-toolbar-handle').addEventListener('click', () => {
-            mobileToolbar.classList.toggle('collapsed');
-            mobileToolbar.classList.toggle('expanded');
-            mobileToolbarContent.style.display = mobileToolbar.classList.contains('expanded') ? 'flex' : 'none';
-        });
-
-        // Initialize on page load
-        window.addEventListener('load', initializeMobileToolbar);
-
-        // Handle resize events
-        window.addEventListener('resize', initializeMobileToolbar);
+            isProcessingQueue = false;
+        }
 
         async function fetchPDFs() {
             try {
@@ -579,167 +458,129 @@
                 const files = await response.json();
                 pdfFiles = files.filter(file => file.name.endsWith('.pdf'));
 
-                const pdfList = document.getElementById('pdf-list');
-                const tlt = document.getElementById('pdf-title');
-                tlt.textContent = pdfFiles[0].name;
+                // Render Section 1: Hero Carousel (Semua PDF)
+                const carousel = document.getElementById('pdf-carousel');
+                const dots = document.getElementById('carousel-dots');
+
                 pdfFiles.forEach((file, index) => {
-                    const card = document.createElement('div');
-                    card.className = 'pdf-card';
-                    card.onclick = () => {
-                        currentPdfIndex = index;
-                        openModal(file.download_url);
-                    };
+                    // Create slide
+                    const slide = document.createElement('div');
+                    slide.className = `carousel-slide ${index === 0 ? 'active' : ''}`;
+                    slide.dataset.index = index;
+                    slide.onclick = () => openPDF(file.download_url);
 
                     const thumbnail = document.createElement('div');
-                    thumbnail.className = 'pdf-thumbnail';
-                    card.appendChild(thumbnail);
+                    thumbnail.className = 'carousel-thumbnail';
+                    thumbnail.innerHTML = `
+                <canvas></canvas>
+                <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+                <div class="pdf-icon"><i class="fas fa-file-pdf"></i></div>
+            `;
+                    slide.appendChild(thumbnail);
 
                     const title = document.createElement('div');
-                    title.className = 'pdf-title';
+                    title.className = 'carousel-title';
                     title.textContent = file.name;
-                    card.appendChild(title);
+                    slide.appendChild(title);
 
-                    pdfList.appendChild(card);
+                    carousel.appendChild(slide);
+
+                    // Queue thumbnail loading for all slides
+                    queueThumbnailLoad(file.download_url, thumbnail.querySelector('canvas'));
+
+                    // Create dot
+                    const dot = document.createElement('div');
+                    dot.className = `carousel-dot ${index === 0 ? 'active' : ''}`;
+                    dot.dataset.index = index;
+                    dot.onclick = (e) => {
+                        goToSlide(index);
+                        e.stopPropagation();
+                    };
+                    dots.appendChild(dot);
                 });
+
+                // Initialize carousel navigation
+                document.querySelector('.carousel-prev').addEventListener('click', (e) => {
+                    prevSlide();
+                    e.stopPropagation();
+                });
+                document.querySelector('.carousel-next').addEventListener('click', (e) => {
+                    nextSlide();
+                    e.stopPropagation();
+                });
+
+                // Render Section 2: Random PDFs (2 PDF Acak)
+                const randomSection = document.getElementById('random-pdfs');
+                const randomPDFs = getRandomPDFs(pdfFiles, 2); // Ambil 2 PDF acak
+                randomPDFs.forEach((file, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'random-item';
+                    item.onclick = () => openPDF(file.download_url);
+                    item.innerHTML = `
+                <canvas></canvas>
+                <div class="loading"><i class="fas fa-spinner fa-spin"></i></div>
+                <div class="pdf-icon"><i class="fas fa-file-pdf"></i></div>
+                <div class="pdf-title">${file.name}</div>
+            `;
+                    randomSection.appendChild(item);
+
+                    // Queue thumbnail loading
+                    queueThumbnailLoad(file.download_url, item.querySelector('canvas'));
+                });
+
+                // Render Section 3: Featured PDF (1 PDF Acak)
+                const featuredSection = document.getElementById('featured-pdf');
+                const featuredPDF = getRandomPDFs(pdfFiles, 1)[0]; // Ambil 1 PDF acak
+                if (featuredPDF) {
+                    featuredSection.onclick = () => openPDF(featuredPDF.download_url);
+                    featuredSection.innerHTML = `
+                <canvas></canvas>
+                <div class="loading"><i class="fas fa-spinner fa-spin"></i></div>
+                <div class="pdf-icon"><i class="fas fa-file-pdf"></i></div>
+                <div class="pdf-title">${featuredPDF.name}</div>
+            `;
+
+                    // Queue thumbnail loading
+                    queueThumbnailLoad(featuredPDF.download_url, featuredSection.querySelector('canvas'));
+                }
             } catch (error) {
                 console.error('Error loading PDFs:', error);
             }
         }
 
-        async function openModal(url) {
-            try {
-                document.getElementById('modal').style.display = 'block';
-                pdfInstance = await pdfjsLib.getDocument(url).promise;
-                currentPage = 1;
-                updatePageCount();
-                renderPage(currentPage);
-            } catch (error) {
-                console.error('Error rendering PDF:', error);
+        function goToSlide(index) {
+            // Hide current slide
+            document.querySelector(`.carousel-slide[data-index="${currentSlide}"]`).classList.remove('active');
+            document.querySelector(`.carousel-dot[data-index="${currentSlide}"]`).classList.remove('active');
+
+            // Show new slide
+            currentSlide = index;
+            document.querySelector(`.carousel-slide[data-index="${currentSlide}"]`).classList.add('active');
+            document.querySelector(`.carousel-dot[data-index="${currentSlide}"]`).classList.add('active');
+        }
+
+        function nextSlide() {
+            const totalSlides = document.querySelectorAll('.carousel-slide').length;
+            const newIndex = (currentSlide + 1) % totalSlides;
+            goToSlide(newIndex);
+        }
+
+        function prevSlide() {
+            const totalSlides = document.querySelectorAll('.carousel-slide').length;
+            const newIndex = (currentSlide - 1 + totalSlides) % totalSlides;
+            goToSlide(newIndex);
+        }
+
+        function openPDF(url) {
+            window.open(url, '_blank'); // Buka PDF di tab baru
+        }
+
+        // Auto-advance carousel
+        setInterval(() => {
+            if (document.querySelectorAll('.carousel-slide').length > 1) {
+                nextSlide();
             }
-        }
-
-        function updatePageCount() {
-            document.getElementById('page-count').textContent = pdfInstance.numPages;
-            document.getElementById('page-count-mobile').textContent = pdfInstance.numPages;
-        }
-
-        async function renderPage(pageNumber) {
-            try {
-                const page = await pdfInstance.getPage(pageNumber);
-                const viewport = page.getViewport({ scale: currentScale });
-
-                const canvas = document.createElement('canvas');
-                const context = canvas.getContext('2d');
-                canvas.width = viewport.width;
-                canvas.height = viewport.height;
-
-                await page.render({ canvasContext: context, viewport }).promise;
-
-                const container = document.getElementById('book-container');
-                container.innerHTML = '';
-                container.appendChild(canvas);
-
-                document.getElementById('page-input').value = pageNumber;
-                document.getElementById('page-input-mobile').value = pageNumber;
-
-                updateNextBookButton();
-                addPageCurlEffect();
-
-                // Add transparent buttons for mobile
-                if (window.innerWidth <= 767) {
-                    const prevButton = document.createElement('div');
-                    prevButton.style.position = 'absolute';
-                    prevButton.style.left = '0';
-                    prevButton.style.top = '0';
-                    prevButton.style.width = '50%';
-                    prevButton.style.height = '100%';
-                    prevButton.style.zIndex = '10';
-                    prevButton.style.cursor = 'pointer';
-                    prevButton.style.backgroundColor = 'rgba(0, 0, 0, 0)';
-                    prevButton.addEventListener('click', () => {
-                        if (currentPage > 1) {
-                            currentPage--;
-                            renderPage(currentPage);
-                        }
-                    });
-
-                    const nextButton = document.createElement('div');
-                    nextButton.style.position = 'absolute';
-                    nextButton.style.right = '0';
-                    nextButton.style.top = '0';
-                    nextButton.style.width = '50%';
-                    nextButton.style.height = '100%';
-                    nextButton.style.zIndex = '10';
-                    nextButton.style.cursor = 'pointer';
-                    nextButton.style.backgroundColor = 'rgba(0, 0, 0, 0)';
-                    nextButton.addEventListener('click', () => {
-                        if (currentPage < pdfInstance.numPages) {
-                            currentPage++;
-                            renderPage(currentPage);
-                        }
-                    });
-
-                    container.appendChild(prevButton);
-                    container.appendChild(nextButton);
-                }
-            } catch (error) {
-                console.error('Error rendering page:', error);
-            }
-        }
-
-        function addPageCurlEffect() {
-            const container = document.getElementById('book-container');
-            const canvas = container.querySelector('canvas');
-            canvas.classList.add('page-curl');
-            setTimeout(() => {
-                canvas.classList.remove('page-curl');
-            }, 500);
-        }
-
-        function updateNextBookButton() {
-            const nextBookButton = document.getElementById('next-book-button');
-
-            if (currentPage >= pdfInstance.numPages && currentPdfIndex < pdfFiles.length - 1) {
-                nextBookButton.style.display = 'flex';
-                nextBookButton.onclick = () => {
-                    currentPdfIndex++;
-                    openModal(pdfFiles[currentPdfIndex].download_url);
-                };
-            } else {
-                nextBookButton.style.display = 'none';
-            }
-        }
-
-        // Event Listeners for both desktop and mobile
-        ['', '-mobile'].forEach(suffix => {
-            document.getElementById(`prev-page${suffix}`)?.addEventListener('click', () => {
-                if (currentPage > 1) {
-                    currentPage--;
-                    renderPage(currentPage);
-                }
-            });
-
-            document.getElementById(`next-page${suffix}`)?.addEventListener('click', () => {
-                if (currentPage < pdfInstance.numPages) {
-                    currentPage++;
-                    renderPage(currentPage);
-                }
-            });
-
-            document.getElementById(`zoom-in${suffix}`)?.addEventListener('click', () => {
-                currentScale += 0.2;
-                renderPage(currentPage);
-            });
-
-            document.getElementById(`zoom-out${suffix}`)?.addEventListener('click', () => {
-                currentScale = Math.max(0.5, currentScale - 0.2);
-                renderPage(currentPage);
-            });
-
-            document.getElementById(`close-modal${suffix}`)?.addEventListener('click', () => {
-                document.getElementById('modal').style.display = 'none';
-            });
-        });
+        }, 5000);
 
         fetchPDFs();
     </script>
